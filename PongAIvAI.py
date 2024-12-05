@@ -369,7 +369,8 @@ def init_game():
     dust_error = 0.00
     init_speed_mag = 2
     timeout = 0.0003
-    clock_rate = 80
+    clock_rate = 8000
+    #clock_rate = 5
     turn_wait_rate = 3
     score_to_win = 1000
 
@@ -385,11 +386,11 @@ def init_game():
     
     
     import chaser_ai
-    import thePREDICTOR
+    import thePREDICTORv2
     
-    paddles[0].move_getter = thePREDICTOR.pong_ai
-    paddles[1].move_getter = directions_from_input
-    #paddles[1].move_getter = chaser_ai.pong_ai
+    paddles[0].move_getter = thePREDICTORv2.pong_ai
+    #paddles[1].move_getter = directions_from_input
+    paddles[1].move_getter = chaser_ai.pong_ai
     
     game_loop(screen, paddles, ball, table_size, clock_rate, turn_wait_rate, score_to_win, 1)
     ball = Ball(table_size, ball_size, paddle_bounce, wall_bounce, dust_error, init_speed_mag)
