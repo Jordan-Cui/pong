@@ -17,16 +17,10 @@
 #   Parts of the code are based on T. S. Hayden Dennison's PongClone (2011)
 #   http://www.pygame.org/project-PongClone-1740-3032.html
 
-
-
 import pygame, sys, time, random, os
 from pygame.locals import *
 
 import math
-
-
-
-
 
 white = [255, 255, 255]
 black = [0, 0, 0]
@@ -77,8 +71,8 @@ class Paddle:
 
 
     def move(self, enemy_frect, ball_frect, table_size):
-        direction = self.move_getter(self.frect.copy(), enemy_frect.copy(), ball_frect.copy(), tuple(table_size))
-        # direction = timeout(self.move_getter, (self.frect.copy(), enemy_frect.copy(), ball_frect.copy(), tuple(table_size)), {}, self.timeout)
+        # direction = self.move_getter(self.frect.copy(), enemy_frect.copy(), ball_frect.copy(), tuple(table_size))
+        direction = timeout(self.move_getter, (self.frect.copy(), enemy_frect.copy(), ball_frect.copy(), tuple(table_size)), {}, self.timeout)
         if direction == "up":
             self.frect.move_ip(0, -self.speed)
         elif direction == "down":
@@ -370,7 +364,6 @@ def init_game():
     init_speed_mag = 2
     timeout = 0.0003
     clock_rate = 8000
-    #clock_rate = 5
     turn_wait_rate = 3
     score_to_win = 1000
 
