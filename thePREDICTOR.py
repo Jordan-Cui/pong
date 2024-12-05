@@ -8,6 +8,11 @@ def pong_ai(paddle_frect, other_paddle_frect, ball_frect, table_size):
 
     # Paddle's center
     paddle_center_y = paddle_frect.pos[1] + paddle_frect.size[1] / 2
+    safety_distance = paddle_frect.size[1] / 4  # 1/4 the length of the paddle
+    paddle_width = paddle_frect.size[0]  # Width of the paddle
+
+    # Define the median axis
+    median_axis = table_size[1] / 2
 
     # Initialize memory for the first call
     if not hasattr(pong_ai, "previous_ball_position"):
@@ -24,12 +29,6 @@ def pong_ai(paddle_frect, other_paddle_frect, ball_frect, table_size):
     # Update memory to only store the current position
     pong_ai.previous_ball_position = [ball_x, ball_y]
 
-
-    #IF moving away from paddle --> steps = steps to other paddle + steps from other paddle to our paddle
-
-    #IF y pos // 2 
-    
-
     # Predict ball's y-position when it reaches the paddle's x-coordinate
     if velocity_x != 0:
         steps_to_paddle = abs((paddle_frect.pos[0] - ball_x) / velocity_x)
@@ -44,26 +43,30 @@ def pong_ai(paddle_frect, other_paddle_frect, ball_frect, table_size):
         # If no x-velocity, move paddle toward the current ball position
         predicted_y = ball_y
 
-    # Decide whether to move "up" or "down"
-    if paddle_center_y < predicted_y:
-        return "down"
-    else:
+    # Define the margin for paddle movement
+    upper_margin = paddle_center_y + safety_distance
+    lower_margin = paddle_center_y - safety_distance
+
+    # Check if the ball is close to the paddle on the x-axis
+    is_ball_close_x = abs(ball_x - paddle_frect.pos[0]) < (paddle_width / 4)
+
+    # Check if the ball is within the safety margin in the y-axis
+    if lower_margin < predicted_y < upper_margin and is_ball_close_x:
+        # New logic based on median axis
+        if paddle_center_y < median_axis:
+            print("Paddle is below the median axis. Moving paddle up.")
+            return "up"
+        elif paddle_center_y > median_axis:
+            print("Paddle is above the median axis. Moving paddle down.")
+            return "down"
+
+    # Old logic if new conditions are not met
+    if lower_margin < predicted_y < upper_margin:
+        print("Ball is within the safety margin. Paddle stays still.")
+        return None  # Stay still if within margin
+    elif predicted_y < lower_margin:
+        print("Ball is below the paddle. Moving paddle up.")
         return "up"
-
-
-    #Locate paddle x position and find game board size to get bounds of things
-
-    #Create txt file if doesn't exist, write current ball center pos
-    #return "up"
-
-    #If txt file exists compute x and y velocity
-    #write x pos, y pos of ball to txt file
-    #divide board x direction size by x velocity to get number of steps until ball contacts paddle
-        #cheeky division modulus stuff to translate infinite coordinates to real coords
-
-    #multiply that number by y velocity to get y position
-    #do imaginary thingies to find y position of ball contact
-    
-    #move center of paddle towards that
-
-    
+    elif predicted_y > upper_margin:
+        print("Ball is above the paddle. Moving paddle down.")
+        return "down"
